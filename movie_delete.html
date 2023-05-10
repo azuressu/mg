@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script> -->
+    <title>Movie Going</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .mainhead {
+            background-color: #DCD6F7;
+            height: 20%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .maintext1 {
+            background-color: #D2DAFF;
+            height: 100px;
+            width: 300px;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #424874;
+            box-shadow: 1px 1px 1px 1px grey;
+        }
+
+        .maintext1:hover {
+            border: 3px solid #424874;
+        }
+
+        .mainhead>h2 {
+            text-decoration: underline #424874 1px;
+            text-underline-offset: 20px;
+        }
+
+        .underlines {
+            height: 0.2%;
+            background-color: #424874;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .mainbodyy {
+            background-color: #DCD6F7;
+            height: 79.8%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mainbody {
+            background-color: #DCD6F7;
+            height: 80%;
+            width: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main_image {
+            margin-right: 10px;
+            background-color: #D2DAFF;
+            width: 20%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #424874;
+        }
+
+        .main_image>img {
+            /*이미지 공간 안에 꽉 채우기*/
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main_text {
+            margin-left: 10px;
+            background-color: #D2DAFF;
+            width: 50%;
+            height: 80%;
+            flex-direction: column;
+            display: flex;
+            justify-content: center;
+            border: 2px solid #424874;
+            /*align-items: center; 가로 가운데 정렬*/
+        }
+
+        .text1,
+        .text2,
+        .text3 {
+            margin: 5px 30px;
+        }
+
+        #delete_btn {
+            margin-left: 10px;
+            background-color: #DCD6F7;
+            height: 35px;
+            width: 100%;
+        }
+
+        /*팝업창*/
+        #popup {
+            display: none;
+            /*숨기기*/
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        #popmenu {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 200px;
+            text-align: center;
+            background: #fff;
+        }
+
+        #popmenu h3 {
+            margin-top: 60px;
+        }
+
+        #popmenu p {
+            margin-top: 5px;
+        }
+
+        .exit {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #skip,
+        #delete {
+            cursor: pointer;
+            width: 50px;
+            margin: 5px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            show_order();
+            //show_order_test();
+            $("#delete_btn").click(function () {
+                $("#popup").fadeIn();
+            });
+
+            // $("#skip").click(function () {
+            //     $("#popup").fadeOut();
+            // });
+        });
+
+        function popup_close() {
+            $('#popup').fadeOut();
+        }
+
+        function show_order() {
+            let title_ = window.name;
+            // GET 요청 확인 Fetch 코드
+            fetch('/test').then((res) => res.json()).then((data) => {
+                let rows = data['result']
+                $('#movie_info').empty();
+                $('#popup').empty();
+                rows.forEach((a) => {
+                    let imageURL = a['image']  // 이미지
+                    let title = a['title']     // 영화제목
+                    let star = a['star']       // 별점
+                    let comment = a['comment'] // 코멘트
+
+                    let temp_html = `<div class="main_image">
+                                            <img src="${imageURL}" alt='이미지가없습니다'>
+                                        </div>
+                                        <div class="main_text">
+                                            <div class="text1">
+                                                <h2>${title}</h2>
+                                            </div>
+                                            <div class="text2">
+                                                <h2>${star}</h2>
+                                            </div>
+                                            <div class="text3">
+                                                <h3>${comment}</h3>
+                                            </div>
+                                        </div>` // 백틱에 넣기 ..
+
+                    let temp_html2 = `<div id="popmenu">
+                                        <h3>${title}</h3>
+                                        <p>정말 삭제하시겠습니까?</p>
+                                        <div class="exit">
+                                            <button id='delete' onclick="del_posting()">삭제</button> <!--삭제를 누르면 메인 페이지로 이동하기-->
+                                            <button id='skip' onclick="popup_close()">취소</button>
+                                        </div>
+                                        </div>`
+                    if (title_ == title) {
+                        $("#movie_info").append(temp_html);
+                        $('#popup').append(temp_html2);
+                    }// if문 종료
+                }) // forEach문 종료
+            }) //fetch문 종료
+        } // show_order() 종료
+
+        function del_posting() {
+            let title = $('.text1').text();
+
+            let formData = new FormData();
+            formData.append('title', title);
+
+            fetch('/test', { method: "POST", body: formData }).then(res => res.json()).then(data => {
+                alert(data['msg'])
+                window.location.href = '/'
+            })
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="popup">
+        <div id="popmenu">
+            <h3></h3>
+            <p>정말 삭제하시겠습니까?</p>
+            <div class="exit">
+                <button id='delete' onclick="del_posting()">삭제</button> <!--삭제를 누르면 메인 페이지로 이동하기-->
+                <button id='skip'>취소</button>
+            </div>
+        </div>
+    </div>
+
+    <div class='mainhead'>
+        <div class="maintext1">
+            <h2>Movie Going</h2>
+        </div>
+    </div>
+    <div class="underlines">
+
+    </div>
+    <div class="mainbodyy">
+        <div class="mainbody" id="movie_info">
+            <div class="main_image">
+                <img src="path.extension" alt='이미지가없습니다'>
+            </div>
+
+            <div class="main_text">
+                <div class="text1">
+                    <h2>Title</h2>
+                </div>
+                <div class="text2">
+                    <h2>Rate</h2>
+                </div>
+                <div class="text3">
+                    <h3>Comment</h3>
+                </div>
+
+            </div>
+        </div>
+        <div class="text4">
+            <button id="delete_btn">삭제하기</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+
+<!-- 텍스트 밑줄: https://hianna.tistory.com/680 / https://hianna.tistory.com/679 
+     팝업 창: https://rgy0409.tistory.com/2980
+     MongoDB 연결: https://bskyvision.com/entry/pymongo-MongoDB-CRUD-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC
+     html파일 간 이동: https://e-hyun.tistory.com/4 ,
+                      https://velog.io/@wkdudhksl/flask-%EC%84%9C%EB%B2%84%EC%97%90%EC%84%9C-%EB%8B%A4%EB%A5%B8%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A1%9C-%EC%9D%B4%EB%8F%99%ED%95%98%EA%B8%B0
+                      http://pythonstudy.xyz/python/article/307-Django-%ED%85%9C%ED%94%8C%EB%A6%BF-Template
+     pymongo delete: https://velog.io/@dayhun/%EC%8A%A4%ED%8C%8C%EB%A5%B4%ED%83%80-%EB%82%B4%EB%B0%B0%EB%8B%A8-3%EC%A3%BC%EC%B0%A8-%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80#pymongofind
+    -->
